@@ -13,6 +13,6 @@ fi
 
 python manage.py migrate pokemons
 python manage.py test pokemons
-python manage.py entrypoint 1
+python manage.py add_pokemons 1
 
 exec "$@"
