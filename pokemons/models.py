@@ -11,20 +11,12 @@ class Pokemon(models.Model):
 
 class EvolutionType(models.Model):
     key = models.ForeignKey(Pokemon, on_delete= models.CASCADE)
+    type = models.CharField(max_length= 50,)
     id_pokemon = models.IntegerField()
     name_pokemon = models.CharField(max_length= 50)
 
-    class Meta:
-        abstract = True
-
     def __str__(self):
-        return self.key.name    
-
-class Evolution(EvolutionType):
-    pass
-
-class PreEvolution(EvolutionType):
-    pass
+        return f'{self.type} {self.name_pokemon}'   
 
 class BaseStat(models.Model):
     pokemon = models.ForeignKey(Pokemon, on_delete= models.CASCADE)
@@ -32,22 +24,5 @@ class BaseStat(models.Model):
     stat = models.IntegerField()
     effort = models.IntegerField()
 
-    class Meta:
-        abstract = True
-
-class Hp(BaseStat):
-    pass
-
-class Attack(BaseStat):
-    pass
-
-class Defense(BaseStat):
-    pass
-class SpecialAttack(BaseStat):
-    pass
-
-class SpecialDefense(BaseStat):
-    pass
-
-class Speed(BaseStat):
-    pass
+    def __str__(self):
+        return f'{self.name} {self.stat}' 

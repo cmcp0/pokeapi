@@ -12,14 +12,6 @@ class Command(BaseCommand):
     help = 'Add the evolution-chains\'s pokemon'
     getEvolutionChainClient: ApiRequest
     getPokemonData: ApiRequest
-    stats_map = {
-        'hp': Hp,
-        'attack': Attack,
-        'defense': Defense,
-        'special-attack': SpecialAttack,
-        'special-defense': SpecialDefense,
-        'speed': Speed
-    }
 
     def add_arguments(self, parser):
         parser.add_argument('id', type=int)
@@ -57,10 +49,11 @@ class Command(BaseCommand):
 
         pokemon_preevolution = None
         if pre_evolution is not None:
-            pokemon_preevolution = PreEvolution(
+            pokemon_preevolution = EvolutionType(
                 key= mapped_pokemon,
                 id_pokemon= pre_evolution.id,
-                name_pokemon= pre_evolution.name
+                name_pokemon= pre_evolution.name,
+                type= 'evolution'
             )
             pokemon_preevolution.save()
         
@@ -79,8 +72,7 @@ class Command(BaseCommand):
     def createStat(self, stat: dict, pokemon: Pokemon) -> BaseStat:
         self.stdout.write(f"..", ending='')
 
-        model: BaseStat = self.stats_map[stat['stat']['name']]
-        mstat = model(
+        mstat = BaseStat(
             pokemon= pokemon,
             name= stat['stat']['name'],
             stat= stat['base_stat'],
@@ -89,15 +81,16 @@ class Command(BaseCommand):
         mstat.save()
         return mstat
     
-    def createEvolution(self, pokemon: dict, pre_evolution: Pokemon) -> Evolution:
+    def createEvolution(self, pokemon: dict, pre_evolution: Pokemon) -> EvolutionType:
         self.stdout.write(f"...", ending='')
 
         mapped_pokemon = self.mapPokemonChain(pokemon= pokemon, pre_evolution= pre_evolution)
         
-        evolution = Evolution(
+        evolution = EvolutionType(
             key= pre_evolution,
             id_pokemon= mapped_pokemon['pokemon'].id,
-            name_pokemon= mapped_pokemon['pokemon'].name
+            name_pokemon= mapped_pokemon['pokemon'].name,
+            type= 'evolution'
         )
         evolution.save()
         return evolution
